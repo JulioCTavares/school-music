@@ -5,64 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1742559687642,
-      "tag": "0000_dry_lockheed",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1742562538607,
-      "tag": "0001_orange_jimmy_woo",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1742562730403,
-      "tag": "0002_clever_meteorite",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1742562773710,
-      "tag": "0003_chilly_rachel_grey",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1742562936576,
-      "tag": "0004_criar_tabela_aula",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1742563150996,
-      "tag": "0005_criar_tabela_instrumento",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1742563236130,
-      "tag": "0006_criar_tabela_pertence",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1742563358942,
-      "tag": "0007_criar_tabela_matricula",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1742563422136,
-      "tag": "0008_criar_tabela_toca",
+      "when": 1742573321769,
+      "tag": "0000_criar_tabelas",
       "breakpoints": true
     }
   ]
