@@ -1,6 +1,6 @@
 services:
   school_db:
-    image: postgres:lastest
+    image: postgres:latest
     container_name: school_db
     environment:
       POSTGRES_USER: docker
