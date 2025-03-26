@@ -1,37 +1,30 @@
 import { eq } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import type { Utiliza, UtilizaInsert } from "..";
+import { db, type Utiliza, type UtilizaInsert } from "..";
 import type { UtilizaRepository } from "../../../repository/utiliza";
 import { utiliza } from "../schemas/utiliza";
 
 export class DrizzleUtilizaRepository implements UtilizaRepository {
-  constructor(private db: PostgresJsDatabase) {}
+  constructor() {}
 
   async findAll(): Promise<Utiliza[]> {
-    return this.db.select().from(utiliza);
+    return db.select().from(utiliza);
   }
 
   async findById(id: string): Promise<Utiliza | null> {
-    const results = await this.db
-      .select()
-      .from(utiliza)
-      .where(eq(utiliza.id, id));
+    const results = await db.select().from(utiliza).where(eq(utiliza.id, id));
     return results[0] ?? null;
   }
 
   async findByAula(idAula: string): Promise<Utiliza[]> {
-    return this.db.select().from(utiliza).where(eq(utiliza.idAula, idAula));
+    return db.select().from(utiliza).where(eq(utiliza.idAula, idAula));
   }
 
   async findByInstrumento(nSerie: string): Promise<Utiliza[]> {
-    return this.db
-      .select()
-      .from(utiliza)
-      .where(eq(utiliza.idInstrumento, nSerie));
+    return db.select().from(utiliza).where(eq(utiliza.idInstrumento, nSerie));
   }
 
   async create(data: UtilizaInsert): Promise<Utiliza> {
-    const results = await this.db.insert(utiliza).values(data).returning();
+    const results = await db.insert(utiliza).values(data).returning();
 
     if (!results[0]) {
       throw new Error("Erro ao criar utiliza, nenhum registro retornado.");
@@ -41,7 +34,7 @@ export class DrizzleUtilizaRepository implements UtilizaRepository {
   }
 
   async update(id: string, data: Partial<UtilizaInsert>): Promise<Utiliza> {
-    const results = await this.db
+    const results = await db
       .update(utiliza)
       .set(data)
       .where(eq(utiliza.id, id))
@@ -55,7 +48,7 @@ export class DrizzleUtilizaRepository implements UtilizaRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const results = await this.db
+    const results = await db
       .delete(utiliza)
       .where(eq(utiliza.id, id))
       .returning();

@@ -1,18 +1,17 @@
 import { eq } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import type { Professor, ProfessorInsert } from "..";
+import { db, type Professor, type ProfessorInsert } from "..";
 import type { ProfessorRepository } from "../../../repository/professor";
 import { professor } from "../schemas/professor";
 
 export class DrizzleProfessorRepository implements ProfessorRepository {
-  constructor(private db: PostgresJsDatabase) {}
+  constructor() {}
 
   async findAll(): Promise<Professor[]> {
-    return this.db.select().from(professor);
+    return db.select().from(professor);
   }
 
   async findById(id: string): Promise<Professor | null> {
-    const results = await this.db
+    const results = await db
       .select()
       .from(professor)
       .where(eq(professor.id, id));
@@ -20,21 +19,18 @@ export class DrizzleProfessorRepository implements ProfessorRepository {
   }
 
   async findByNome(nome: string): Promise<Professor[]> {
-    return this.db
-      .select()
-      .from(professor)
-      .where(eq(professor.nome_prof, nome));
+    return db.select().from(professor).where(eq(professor.nome_prof, nome));
   }
 
   async findByEspecialidade(especialidade: string): Promise<Professor[]> {
-    return this.db
+    return db
       .select()
       .from(professor)
       .where(eq(professor.especialidade, especialidade));
   }
 
   async create(data: ProfessorInsert): Promise<Professor> {
-    const results = await this.db.insert(professor).values(data).returning();
+    const results = await db.insert(professor).values(data).returning();
     if (!results[0]) {
       throw new Error("Erro ao criar professor, nenhum registro retornado.");
     }
@@ -42,7 +38,7 @@ export class DrizzleProfessorRepository implements ProfessorRepository {
   }
 
   async update(id: string, data: Partial<ProfessorInsert>): Promise<Professor> {
-    const results = await this.db
+    const results = await db
       .update(professor)
       .set(data)
       .where(eq(professor.id, id))
@@ -58,7 +54,7 @@ export class DrizzleProfessorRepository implements ProfessorRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const results = await this.db
+    const results = await db
       .delete(professor)
       .where(eq(professor.id, id))
       .returning();

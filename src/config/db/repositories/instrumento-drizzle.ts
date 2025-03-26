@@ -1,18 +1,17 @@
 import { eq } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import type { Instrumento, InstrumentoInsert } from "..";
+import { db, type Instrumento, type InstrumentoInsert } from "..";
 import type { InstrumentoRepository } from "../../../repository/instrumento";
 import { instrumento } from "../schemas/instrumento";
 
 export class DrizzleInstrumentoRepository implements InstrumentoRepository {
-  constructor(private db: PostgresJsDatabase) {}
+  constructor() {}
 
   async findAll(): Promise<Instrumento[]> {
-    return this.db.select().from(instrumento);
+    return db.select().from(instrumento);
   }
 
   async findById(id: string): Promise<Instrumento | null> {
-    const results = await this.db
+    const results = await db
       .select()
       .from(instrumento)
       .where(eq(instrumento.id, id));
@@ -20,7 +19,7 @@ export class DrizzleInstrumentoRepository implements InstrumentoRepository {
   }
 
   async findByNSerie(nSerie: string): Promise<Instrumento | null> {
-    const results = await this.db
+    const results = await db
       .select()
       .from(instrumento)
       .where(eq(instrumento.n_serie, nSerie));
@@ -28,11 +27,11 @@ export class DrizzleInstrumentoRepository implements InstrumentoRepository {
   }
 
   async findByTipo(tipo: string): Promise<Instrumento[]> {
-    return this.db.select().from(instrumento).where(eq(instrumento.tipo, tipo));
+    return db.select().from(instrumento).where(eq(instrumento.tipo, tipo));
   }
 
   async create(data: InstrumentoInsert): Promise<Instrumento> {
-    const results = await this.db.insert(instrumento).values(data).returning();
+    const results = await db.insert(instrumento).values(data).returning();
 
     if (!results[0]) {
       throw new Error("Erro ao criar instrumento, nenhum registro retornado.");
@@ -45,7 +44,7 @@ export class DrizzleInstrumentoRepository implements InstrumentoRepository {
     id: string,
     data: Partial<InstrumentoInsert>
   ): Promise<Instrumento> {
-    const results = await this.db
+    const results = await db
       .update(instrumento)
       .set(data)
       .where(eq(instrumento.id, id))
@@ -61,7 +60,7 @@ export class DrizzleInstrumentoRepository implements InstrumentoRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const results = await this.db
+    const results = await db
       .delete(instrumento)
       .where(eq(instrumento.id, id))
       .returning();

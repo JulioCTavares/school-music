@@ -1,23 +1,22 @@
 import { eq } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
-import type { Aluno, AlunoInsert } from "..";
+import { db, type Aluno, type AlunoInsert } from "..";
 import type { AlunoRepository } from "../../../repository/aluno";
 import { aluno } from "../schemas/aluno";
 
 export class DrizzleAlunoRepository implements AlunoRepository {
-  constructor(private db: PostgresJsDatabase) {}
+  constructor() {}
 
   async findAll(): Promise<Aluno[]> {
-    return this.db.select().from(aluno);
+    return db.select().from(aluno);
   }
 
   async findById(id: string): Promise<Aluno | null> {
-    const [result] = await this.db.select().from(aluno).where(eq(aluno.id, id));
+    const [result] = await db.select().from(aluno).where(eq(aluno.id, id));
     return result ?? null;
   }
 
   async findByMatricula(matricula: string): Promise<Aluno | null> {
-    const [result] = await this.db
+    const [result] = await db
       .select()
       .from(aluno)
       .where(eq(aluno.matricula, matricula));
@@ -25,15 +24,12 @@ export class DrizzleAlunoRepository implements AlunoRepository {
   }
 
   async findByCPF(cpf: string): Promise<Aluno | null> {
-    const [result] = await this.db
-      .select()
-      .from(aluno)
-      .where(eq(aluno.cpf, cpf));
+    const [result] = await db.select().from(aluno).where(eq(aluno.cpf, cpf));
     return result ?? null;
   }
 
   async create(data: AlunoInsert): Promise<Aluno> {
-    const results = await this.db.insert(aluno).values(data).returning();
+    const results = await db.insert(aluno).values(data).returning();
 
     if (!results[0]) {
       throw new Error("Falha ao criar aluno, nenhum registro retornado.");
@@ -43,7 +39,7 @@ export class DrizzleAlunoRepository implements AlunoRepository {
   }
 
   async update(id: string, data: Partial<AlunoInsert>): Promise<Aluno> {
-    const results = await this.db
+    const results = await db
       .update(aluno)
       .set(data)
       .where(eq(aluno.id, id))
@@ -57,10 +53,7 @@ export class DrizzleAlunoRepository implements AlunoRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const results = await this.db
-      .delete(aluno)
-      .where(eq(aluno.id, id))
-      .returning();
+    const results = await db.delete(aluno).where(eq(aluno.id, id)).returning();
     return results.length > 0;
   }
 }

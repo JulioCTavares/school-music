@@ -1,15 +1,39 @@
 services:
   school_db:
-    image: postgres:latest
+    image: bitnami/postgresql:latest
     container_name: school_db
     environment:
-      POSTGRES_USER: docker
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: school
       POSTGRES_DB: school_db
     ports:
       - "5432:5432"
     volumes:
-      - ./data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: school_api
+    depends_on:
+      school_db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgres://postgres:school@school_db:5432/school_db
+      - PORT=3000
+      - NODE_ENV=development
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./src:/app/src
+      - ./drizzle:/app/drizzle
+    command: sh -c "bun run migrate && bun run dev"
 
 volumes:
-  data:
+  postgres_data:
