@@ -5,4 +5,5 @@ export interface ProfessorRepository
   extends BaseRepository<Professor, ProfessorInsert> {
   findByNome(nome: string): Promise<Professor[]>;
   findByEspecialidade(especialidade: string): Promise<Professor[]>;
+  findByAula(id: string): Promise<Professor[]>;
 }

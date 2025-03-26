@@ -90,6 +90,30 @@ app.get("/professores", async (c) => {
   }
 });
 
+app.get("/professores/aula/:codAula", async (c) => {
+  const id = c.req.param("codAula");
+  try {
+    const professor = await professorRepository.findByAula(id || "");
+    return c.json(professor);
+  } catch (error) {
+    console.error("Error fetching professor:", error);
+    return c.json({ error: "Failed to fetch professor" }, 500);
+  }
+});
+
+app.get("/professores/:especialidade", async (c) => {
+  const especialidade = c.req.param("especialidade");
+  try {
+    const professores = await professorRepository.findByEspecialidade(
+      especialidade || ""
+    );
+    return c.json(professores);
+  } catch (error) {
+    console.error("Error fetching professores:", error);
+    return c.json({ error: "Failed to fetch professores" }, 500);
+  }
+});
+
 // Turmas routes
 app.get("/turmas", async (c) => {
   try {
@@ -110,6 +134,14 @@ app.get("/aulas", async (c) => {
     console.error("Error fetching aulas:", error);
     return c.json({ error: "Failed to fetch aulas" }, 500);
   }
+});
+
+app.get("/aulas/:id", async (c) => {
+  try {
+    const id = c.req.param("id");
+    const aulas = await aulaRepository.findByCodAula(id || "");
+    return c.json(aulas);
+  } catch (error) {}
 });
 
 // Instrumentos routes

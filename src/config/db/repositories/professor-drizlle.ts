@@ -1,6 +1,7 @@
-import { eq } from "drizzle-orm";
+import { eq, like } from "drizzle-orm";
 import { db, type Professor, type ProfessorInsert } from "..";
 import type { ProfessorRepository } from "../../../repository/professor";
+import { aula } from "../schemas";
 import { professor } from "../schemas/professor";
 
 export class DrizzleProfessorRepository implements ProfessorRepository {
@@ -26,7 +27,7 @@ export class DrizzleProfessorRepository implements ProfessorRepository {
     return db
       .select()
       .from(professor)
-      .where(eq(professor.especialidade, especialidade));
+      .where(like(professor.especialidade, `%${especialidade}%`));
   }
 
   async create(data: ProfessorInsert): Promise<Professor> {
@@ -59,5 +60,19 @@ export class DrizzleProfessorRepository implements ProfessorRepository {
       .where(eq(professor.id, id))
       .returning();
     return results.length > 0;
+  }
+
+  async findByAula(codAula: string): Promise<Professor[]> {
+    const [aulaExist] = await db
+      .select()
+      .from(aula)
+      .where(eq(aula.cod_aula, codAula));
+    if (!aulaExist) {
+      return [];
+    }
+    return db
+      .select()
+      .from(professor)
+      .where(eq(professor.idAula, aulaExist.id));
   }
 }
